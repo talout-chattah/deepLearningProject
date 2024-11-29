@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Prepare MNIST and CIFAR-10 data for permuted task sequences
     mnist_permuted_prepared = prepare_data_for_sequences(mnist_data, permuted_task_sequences['mnist'])
     #cifar_permuted_prepared = prepare_data_for_sequences(cifar_data, permuted_task_sequences['cifar10'])
-    #print(mnist_permuted_prepared)
+    print( permuted_task_sequences['mnist'])
     # Generate Task2Vec embeddings for MNIST unit tasks
     mnist_embeddings = generate_task_embeddings(mnist_permuted_prepared)
 

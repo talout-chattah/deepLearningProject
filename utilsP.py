@@ -96,6 +96,9 @@ class FilteredDataset(Dataset):
         
     def __len__(self):
         return len(self.filtered_indices)
+    
+    def get_dims(self):
+        return 2, 10
 
     def __getitem__(self, idx):
         # Get the sample and label using the filtered index
@@ -158,6 +161,6 @@ def generate_task_embeddings(mnist_permuted_prepared):
     for task in mnist_permuted_prepared:  # Directly iterate over the datasets
         print(f"Task: {task}, Task type: {type(task)}")
         for subset in task:
-            probe_network = get_model('resnet18', pretrained=True, num_classes=10)
+            probe_network = get_model('resnet18', pretrained=True, num_classes=10).cuda()
             embeddings.append(Task2Vec(probe_network, max_samples=1000, skip_layers=6).embed(subset))
     return embeddings

@@ -2,7 +2,7 @@ import tensorflow.compat.v1 as tf
 import numpy as np
 from copy import deepcopy
 
-tf.disable_v2_behavior()
+tf.compat.v1.disable_v2_behavior
 np.random.seed(0)
 tf.set_random_seed(0)
 

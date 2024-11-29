@@ -60,13 +60,6 @@ num_tasks = 5
 
 # Run vanilla VCL
 print("vanilla VCL:")
-# Measure initial CPU and memory usage
-process = psutil.Process()
-initial_cpu = psutil.cpu_percent(interval=1)
-initial_memory = process.memory_info().rss / (1024 * 1024)  # in MB
-
-# Record the start time
-start_time = time.time()
 
 tf.set_random_seed(12)
 np.random.seed(1)
@@ -76,36 +69,9 @@ data_gen = PermutedMnistGenerator(num_tasks)
 vcl_result = vcl.run_vcl(hidden_size, no_epochs, data_gen, coreset.rand_from_batch, coreset_size, batch_size, single_head)
 print (vcl_result)
 
-# Record the end time
-end_time = time.time()
-
-# Measure final CPU and memory usage
-final_cpu = psutil.cpu_percent(interval=1)
-final_memory = process.memory_info().rss / (1024 * 1024)  # in MB
-
-# Calculate the time taken
-time_taken = end_time - start_time
-
-# Calculate the CPU and memory usage
-cpu_usage = final_cpu - initial_cpu
-memory_usage = final_memory - initial_memory
-
-
-print(f"Code for vanilla VCL executed in {time_taken:.4f} seconds.")
-print(f"CPU usage: {cpu_usage:.2f}%")
-print(f"Memory usage: {memory_usage:.2f} MB")
-
 
 # Run random coreset VCL
 print("random coreset VCL:")
-
-# Measure initial CPU and memory usage
-process = psutil.Process()
-initial_cpu = psutil.cpu_percent(interval=1)
-initial_memory = process.memory_info().rss / (1024 * 1024)  # in MB
-
-# Record the start time
-start_time = time.time()
 
 tf.reset_default_graph()
 tf.set_random_seed(12)
@@ -116,26 +82,6 @@ data_gen = PermutedMnistGenerator(num_tasks)
 rand_vcl_result = vcl.run_vcl(hidden_size, no_epochs, data_gen, 
     coreset.rand_from_batch, coreset_size, batch_size, single_head)
 print (rand_vcl_result)
-
-# Record the end time
-end_time = time.time()
-
-# Measure final CPU and memory usage
-final_cpu = psutil.cpu_percent(interval=1)
-final_memory = process.memory_info().rss / (1024 * 1024)  # in MB
-
-# Calculate the time taken
-time_taken = end_time - start_time
-
-# Calculate the CPU and memory usage
-cpu_usage = final_cpu - initial_cpu
-memory_usage = final_memory - initial_memory
-
-
-print(f"Code for random coreset VCL executed in {time_taken:.4f} seconds.")
-print(f"CPU usage: {cpu_usage:.2f}%")
-print(f"Memory usage: {memory_usage:.2f} MB")
-
 
 
 # Run k-center coreset VCL

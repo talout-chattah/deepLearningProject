@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-import VCL.ddm.alg.utils
+from VCL.ddm.alg import utils
 from VCL.ddm.alg.cla_models_multihead import Vanilla_NN, MFVI_NN
 
 def run_vcl(hidden_size, no_epochs, data_gen, coreset_method, coreset_size=0, batch_size=None, single_head=True):
