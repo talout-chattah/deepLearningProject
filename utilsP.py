@@ -11,22 +11,33 @@ import Task2vec.task_similarity
 from itertools import combinations, permutations
 import torch
 from torch.utils.data import Dataset
+import gzip
 
 # Step 1: Load MNIST and CIFAR-10 datasets
 def load_datasets():
+    # Define dataset names
+    dataset_names = ('mnist', 'cifar10', 'rotatedMNIST')
 
-    dataset_names = ('mnist', 'cifar10')
-    # Change `root` with the directory you want to use to download the datasets
-    dataset_list = [datasets.__dict__[name](root='./data')[0] for name in dataset_names]
+    # Load standard datasets (MNIST and CIFAR-10)
+    dataset_list = [datasets.__dict__[name](root='./data')[0] for name in dataset_names if name != 'rotatedMNIST']
 
-    return dataset_names,dataset_list
+    # Load rotatedMNIST from a `.pkl.gz` file
+    rotated_mnist_path = './data/rotatedMNIST.pkl.gz'  # Update with your file path
+    with gzip.open(rotated_mnist_path, 'rb') as f:
+        x_rotated, y_rotated = pickle.load(f)
+
+    # Add rotatedMNIST to the dataset list
+    dataset_list.append((x_rotated, y_rotated))
+
+    return dataset_names, dataset_list
 
 # Step 2: Generate 45 unit tasks (all pairs of labels)
 def generate_unit_tasks(dataset_names, dataset_list):
     # Number of labels for MNIST and CIFAR-10
     num_classes = {
         'mnist': 10,
-        'cifar10': 10
+        'cifar10': 10,
+        'rotatedMNIST': 10
     }
     
     unit_tasks = {}

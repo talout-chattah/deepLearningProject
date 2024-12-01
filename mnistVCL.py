@@ -7,6 +7,8 @@ sys.path.extend(['alg/'])
 from VCL.ddm.alg import vcl, coreset, utils
 from copy import deepcopy
 from utilsP import *
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 tf.disable_v2_behavior()
 
@@ -84,18 +86,17 @@ class TaskDefinedMnistGenerator:
 
 
 
-hidden_size = [100, 100]
-batch_size = 256
-no_epochs = 10 # number of epochs
+hidden_size = [256, 256]
+batch_size = 64
+no_epochs = 120 # number of epochs
 single_head = True
-num_tasks = 5
 
 # Run vanilla VCL
 print("vanilla VCL:")
 
 tf.set_random_seed(12)
 np.random.seed(1)
-coreset_size = 0
+coreset_size = 200
 
 dataset_names, datasets_list = load_datasets()
 # Generate unit tasks (45 binary classification tasks)
@@ -105,10 +106,32 @@ unit_tasks = generate_unit_tasks(dataset_names, datasets_list )
 # Generate 120 permuted task sequences from a fixed task set
 permuted_task_sequences = generate_permuted_task_sequences(unit_tasks) 
 
-tasks = permuted_task_sequences['mnist']
+numtasks = 5
+tasks = []
+for i in range(numtasks):
+    tasks.append(permuted_task_sequences['mnist'][i]) 
 
-task_gen = TaskDefinedMnistGenerator(tasks, max_samples=10)
+task_gen = TaskDefinedMnistGenerator(tasks, max_samples=100)
 
 with tf.device('/GPU:0'):
-    vcl_result = vcl.run_vcl(hidden_size, no_epochs, task_gen, coreset.rand_from_batch, coreset_size, batch_size, single_head)
-    print (vcl_result)
+    rand_vcl_result = vcl.run_vcl(hidden_size, no_epochs, task_gen, 
+                                  coreset.rand_from_batch, coreset_size, batch_size, single_head)
+    print (rand_vcl_result)
+
+# Accuracy matrix
+accuracy_matrix = rand_vcl_result
+
+# Generate the heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(
+    accuracy_matrix, 
+    annot=True, 
+    fmt=".3f", 
+    cmap="Blues", 
+    cbar_kws={"label": "Accuracy"}, 
+    mask=np.isnan(accuracy_matrix)
+)
+plt.xlabel("Evaluated Task (j)")
+plt.ylabel("Trained Task (i)")
+plt.title("Accuracy Matrix Heatmap for Sequential Task Learning")
+plt.show()
