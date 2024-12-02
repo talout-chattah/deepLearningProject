@@ -1,13 +1,18 @@
 from utilsP import *
-
-
+import tensorflow as tf
+from torch import tensor
+import random
 # Main Script
 if __name__ == "__main__":
     # Load datasets
     dataset_names, datasets_list = load_datasets()
-    mnist_data = limit_dataset_size(datasets_list[0], max_size=10)
-    cifar_data = limit_dataset_size(datasets_list[1], max_size=10)
-    rotatedMNIST_data = limit_dataset_size(datasets_list[2], max_size=10)
+    mnist_data = limit_dataset_size(datasets_list[0], max_size=1000)
+    cifar_data = limit_dataset_size(datasets_list[1], max_size=1000)
+    rotatedMNIST_data = []
+    for item, label in mnist_data:
+        itemrotated = torch.rot90(item, k=random.randint(0, 3), dims=(1, 2))
+        rotatedMNIST_data.append((itemrotated,label))
+    
 
     # Generate unit tasks (45 binary classification tasks)
     unit_tasks = generate_unit_tasks(dataset_names, datasets_list )
@@ -21,29 +26,26 @@ if __name__ == "__main__":
     # Prepare MNIST and CIFAR-10 data for random task sequences
     #mnist_random_prepared = prepare_data_for_sequences(mnist_data, random_task_sequences['mnist'])
     #cifar_random_prepared = prepare_data_for_sequences(cifar_data, random_task_sequences['cifar10'])
-    rotatedMNIST_random_prepared = prepare_data_for_sequences(mnist_data, random_task_sequences['rotatedMNIST'])
+    #rotatedMNIST_random_prepared = prepare_data_for_sequences(mnist_data, random_task_sequences['rotatedMNIST'])
 
     # Prepare MNIST and CIFAR-10 data for permuted task sequences
     mnist_permuted_prepared = prepare_data_for_sequences(mnist_data, permuted_task_sequences['mnist'])
-    #cifar_permuted_prepared = prepare_data_for_sequences(cifar_data, permuted_task_sequences['cifar10'])
-    rotatedMNIST_permuted_prepared = prepare_data_for_sequences(mnist_data, permuted_task_sequences['rotatedMNIST'])
-    print( permuted_task_sequences['mnist'])
-    # Generate Task2Vec embeddings for MNIST unit tasks
+    cifar_permuted_prepared = prepare_data_for_sequences(cifar_data, permuted_task_sequences['cifar10'])
+    rotatedMNIST_permuted_prepared = prepare_data_for_sequences(rotatedMNIST_data, permuted_task_sequences['mnist'])
+
+    # Generate Task2Vec embeddings for tasks
     rotatedMNIST_embeddings = generate_task_embeddings(rotatedMNIST_permuted_prepared)
     mnist_embeddings = generate_task_embeddings(mnist_permuted_prepared)
-    
-
-    # Generate Task2Vec embeddings for CIFAR-10 unit tasks
-    #cifar_embeddings = generate_task_embeddings(cifar_permuted_prepared)
+    cifar_embeddings = generate_task_embeddings(cifar_permuted_prepared)
 
     # Save embeddings
     with open('mnist_embeddings.p', 'wb') as f:
         pickle.dump(mnist_embeddings, f)
     
-    #with open('cifar_embeddings.p', 'wb') as f:
-        #pickle.dump(cifar_embeddings, f)
+    with open('cifar_embeddings.p', 'wb') as f:
+        pickle.dump(cifar_embeddings, f)
 
     with open('rotatedMNIST_embeddings.p', 'wb') as f:
-        pickle.dump(mnist_embeddings, f)
+        pickle.dump(rotatedMNIST_embeddings, f)
     
     print("Embeddings for MNIST and CIFAR-10 unit tasks have been saved.")

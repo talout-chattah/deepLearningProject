@@ -11,23 +11,15 @@ import Task2vec.task_similarity
 from itertools import combinations, permutations
 import torch
 from torch.utils.data import Dataset
+from torchvision import transforms
 import gzip
 
 # Step 1: Load MNIST and CIFAR-10 datasets
 def load_datasets():
-    # Define dataset names
     dataset_names = ('mnist', 'cifar10', 'rotatedMNIST')
-
-    # Load standard datasets (MNIST and CIFAR-10)
-    dataset_list = [datasets.__dict__[name](root='./data')[0] for name in dataset_names if name != 'rotatedMNIST']
-
-    # Load rotatedMNIST from a `.pkl.gz` file
-    rotated_mnist_path = './data/rotatedMNIST.pkl.gz'  # Update with your file path
-    with gzip.open(rotated_mnist_path, 'rb') as f:
-        x_rotated, y_rotated = pickle.load(f)
-
-    # Add rotatedMNIST to the dataset list
-    dataset_list.append((x_rotated, y_rotated))
+    
+    # Change `root` with the directory you want to use to download the datasets
+    dataset_list = [datasets.__dict__[name](root='./data')[0] for name in dataset_names[:2]]
 
     return dataset_names, dataset_list
 
@@ -168,9 +160,8 @@ def prepare_data_for_sequences(dataset, task_sequences):
 # Step 8: Generate task embeddings for each unit task using Task2Vec
 def generate_task_embeddings(mnist_permuted_prepared):
     embeddings = []
-    print("mnist_permuted_prepared type:",type(mnist_permuted_prepared))
-    for task in mnist_permuted_prepared:  # Directly iterate over the datasets
-        print(f"Task: {task}, Task type: {type(task)}")
+    for index, task in enumerate(mnist_permuted_prepared):  # Directly iterate over the datasets
+        print(f"Task N°{index} is embedding")
         for subset in task:
             probe_network = get_model('resnet18', pretrained=True, num_classes=10).cuda()
             embeddings.append(Task2Vec(probe_network, max_samples=1000, skip_layers=6).embed(subset))
