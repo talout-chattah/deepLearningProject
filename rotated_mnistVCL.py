@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.ndimage import rotate
 import tensorflow.compat.v1 as tf
 import gzip
 import pickle
@@ -12,10 +13,10 @@ import seaborn as sns
 
 tf.disable_v2_behavior()
 
-class TaskDefinedMnistGenerator:
+class TaskDefinedRotatedMnistGenerator:
     def __init__(self, task_list, max_samples=None):
         # Load MNIST dataset
-        with gzip.open('data/mnist.pkl.gz', 'rb') as f:
+        with gzip.open('data/rotatedmnist.pkl.gz', 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding='latin1')
 
         self.X_train = np.vstack((train_set[0], valid_set[0]))
@@ -85,9 +86,8 @@ class TaskDefinedMnistGenerator:
         return x_train, y_train_one_hot, x_test, y_test_one_hot
 
 
-
 hidden_size = [256, 256]
-batch_size = 64
+batch_size = 0 #64
 no_epochs = 120 # number of epochs
 single_head = True
 
@@ -96,7 +96,7 @@ print("vanilla VCL:")
 
 tf.set_random_seed(12)
 np.random.seed(1)
-coreset_size = 200
+coreset_size = 0
 
 dataset_names, datasets_list = load_datasets()
 # Generate unit tasks (45 binary classification tasks)
@@ -111,7 +111,7 @@ tasks = []
 for i in range(numtasks):
     tasks.append(permuted_task_sequences['mnist'][i]) 
 
-task_gen = TaskDefinedMnistGenerator(permuted_task_sequences['mnist'], max_samples=500)
+task_gen = TaskDefinedRotatedMnistGenerator(tasks, max_samples=500)
 
 with tf.device('/GPU:0'):
     rand_vcl_result = vcl.run_vcl(hidden_size, no_epochs, task_gen, 
