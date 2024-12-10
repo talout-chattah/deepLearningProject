@@ -87,7 +87,7 @@ class TaskDefinedRotatedMnistGenerator:
 
 
 hidden_size = [256, 256]
-batch_size = 0 #64
+batch_size = None #64
 no_epochs = 120 # number of epochs
 single_head = True
 
@@ -111,7 +111,7 @@ tasks = []
 for i in range(numtasks):
     tasks.append(permuted_task_sequences['mnist'][i]) 
 
-task_gen = TaskDefinedRotatedMnistGenerator(tasks, max_samples=500)
+task_gen = TaskDefinedRotatedMnistGenerator(permuted_task_sequences['mnist'], max_samples=500)
 
 with tf.device('/GPU:0'):
     rand_vcl_result = vcl.run_vcl(hidden_size, no_epochs, task_gen, 
@@ -122,5 +122,5 @@ with tf.device('/GPU:0'):
 accuracy_matrix = rand_vcl_result
 
 # Save the accuracy matrix
-with open("accuracy_matrix.pkl", "wb") as f:
+with open("accuracy_matrix120.pkl", "wb") as f:
     pickle.dump(accuracy_matrix, f)

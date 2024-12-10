@@ -36,16 +36,16 @@ if __name__ == "__main__":
     # Generate Task2Vec embeddings for tasks
     rotatedMNIST_embeddings = generate_task_embeddings(rotatedMNIST_permuted_prepared)
     mnist_embeddings = generate_task_embeddings(mnist_permuted_prepared)
-    cifar_embeddings = generate_task_embeddings(cifar_permuted_prepared)
+    #cifar_embeddings = generate_task_embeddings(cifar_permuted_prepared)
 
     # Save embeddings
     with open('mnist_embeddings.p', 'wb') as f:
-        pickle.dump(mnist_embeddings, f)
+        pickle.dump((permuted_task_sequences['mnist'],mnist_embeddings), f)
     
-    with open('cifar_embeddings.p', 'wb') as f:
-        pickle.dump(cifar_embeddings, f)
+    #with open('cifar_embeddings.p', 'wb') as f:
+        #pickle.dump(cifar_embeddings, f)
 
     with open('rotatedMNIST_embeddings.p', 'wb') as f:
-        pickle.dump(rotatedMNIST_embeddings, f)
+        pickle.dump((permuted_task_sequences['mnist'],rotatedMNIST_embeddings), f)
     
     print("Embeddings for MNIST and CIFAR-10 unit tasks have been saved.")
