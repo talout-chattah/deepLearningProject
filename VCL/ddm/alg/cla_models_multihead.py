@@ -1,6 +1,7 @@
 import tensorflow.compat.v1 as tf
 import numpy as np
 from copy import deepcopy
+import pickle
 
 tf.compat.v1.disable_v2_behavior
 np.random.seed(0)
@@ -108,7 +109,13 @@ class Cla_NN(object):
     def get_weights(self):
         weights = self.sess.run([self.weights])[0]
         return weights
-
+    
+    def set_weights(self, new_weights):
+        assign_ops = []
+        for variable, new_value in zip(self.weights, new_weights):
+            assign_ops.append(variable.assign(new_value))
+        self.sess.run(assign_ops)
+    
     def close_session(self):
         self.sess.close()
 
@@ -445,3 +452,23 @@ class MFVI_NN(Cla_NN):
         b_last_v.append(bi_v)
             
         return [W_m, b_m, W_last_m, b_last_m], [W_v, b_v, W_last_v, b_last_v]
+    
+    def save_model(self, file_path, in_dim, hidden_size, out_dim):
+        model_state = {
+            'weights': self.get_weights(),
+            'in_dim': in_dim,
+            'hidden_size': hidden_size,
+            'out_dim': out_dim,
+        }
+        with open(file_path, 'wb') as f:
+            pickle.dump(model_state, f)
+
+    def load_model(self, file_path):
+        with open(file_path, 'rb') as f:
+            model_state = pickle.load(f)
+        self.set_weights(model_state['weights'])  # Assuming this method exists to load weights
+        self.input_size = model_state['in_dim']
+        self.hidden_size = model_state['hidden_size']
+        self.output_size = model_state['out_dim']
+    
+    

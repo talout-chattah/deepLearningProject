@@ -3,7 +3,7 @@ import tensorflow as tf
 from VCL.ddm.alg import utils
 from VCL.ddm.alg.cla_models_multihead import Vanilla_NN, MFVI_NN
 
-def run_vcl(hidden_size, no_epochs, data_gen, coreset_method, coreset_size=0, batch_size=None, single_head=True):
+def run_vcl(hidden_size, no_epochs, data_gen, coreset_method, coreset_size=0, batch_size=None, single_head=True, saving_path= "saved_models"):
     in_dim, out_dim = data_gen.get_dims()
     x_coresets, y_coresets = [], []
     x_testsets, y_testsets = [], []
@@ -36,6 +36,9 @@ def run_vcl(hidden_size, no_epochs, data_gen, coreset_method, coreset_size=0, ba
         mf_model.train(x_train, y_train, head, no_epochs, bsize)
         mf_weights, mf_variances = mf_model.get_weights()
 
+        #Save the model
+        if task_id == data_gen.max_iter - 1:
+            mf_model.save_model(saving_path, in_dim, hidden_size, out_dim)
         # Incorporate coreset data and make prediction
         acc = utils.get_scores(mf_model, x_testsets, y_testsets, x_coresets, y_coresets, hidden_size, no_epochs, single_head, batch_size)
         all_acc = utils.concatenate_results(acc, all_acc)
