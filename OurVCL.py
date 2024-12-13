@@ -81,13 +81,14 @@ class YaraGenerator:
 
 
 dataset_paths = [
-    "data/rotatedmnist.pkl.gz",
     "data/mnist.pkl.gz",
+    "data/rotatedmnist45.pkl.gz",
     "data/rotatedmnist90.pkl.gz",
-    "data/rotatedmnist.pkl.gz",
+    "data/rotatedmnist135.pkl.gz",
     "data/rotatedmnist180.pkl.gz",
+    "data/rotatedmnist225.pkl.gz",
     "data/rotatedmnist270.pkl.gz",
-    "data/rotatedmnist.pkl.gz",
+    "data/rotatedmnist315.pkl.gz",
 ]
 
 hidden_size = [256, 256]
@@ -100,18 +101,18 @@ print("vanilla VCL:")
 
 tf.set_random_seed(12)
 np.random.seed(1)
-coreset_size = 0 
+coreset_size = 200 
 
 task_gen = YaraGenerator(dataset_paths, max_samples= 5000)
 
 with tf.device('/GPU:0'):
     rand_vcl_result = vcl.run_vcl(hidden_size, no_epochs, task_gen, 
-                                  coreset.rand_from_batch, coreset_size, batch_size, single_head, "saved_models/VCLBest.pkl")
+                                  coreset.rand_from_batch, coreset_size, batch_size, single_head, "saved_models/coresetVCLHamidi.pkl")
     print (rand_vcl_result)
 
 # Accuracy matrix
 accuracy_matrix = rand_vcl_result
 
 # Save the accuracy matrix
-with open("Accuracy_Matrix/yara_accuracy_matrix_Best.pkl", "wb") as f:
+with open("Accuracy_Matrix/Hamidi_coresetVCL_accuracy_matrix.pkl", "wb") as f:
     pickle.dump(accuracy_matrix, f)
