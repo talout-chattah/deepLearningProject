@@ -160,10 +160,9 @@ def prepare_data_for_sequences(dataset, task_sequences):
 # Step 8: Generate task embeddings for each unit task using Task2Vec
 def generate_task_embeddings(mnist_permuted_prepared):
     embeddings = []
-    for index, task in enumerate(mnist_permuted_prepared):  # Directly iterate over the datasets
+    for index, task in enumerate(mnist_permuted_prepared):
         print(f"Task N°{index} is embedding")
         for subset in task:
-            #print("subset type", type(subset))
             probe_network = get_model('resnet18', pretrained=True, num_classes=10).cuda()
             embeddings.append(Task2Vec(probe_network, max_samples=1000, skip_layers=6).embed(subset))
     return embeddings

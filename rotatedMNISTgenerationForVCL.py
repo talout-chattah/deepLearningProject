@@ -38,13 +38,13 @@ rotated_train_set_images = []
 for image in train_set[0]:
 
     # Flattened MNIST image array
-    image_flattened = image  # Replace "..." with the full array
+    image_flattened = image  
 
     # Step 1: Reshape to 28x28
     image_2d = image_flattened.reshape(28, 28)
 
-    # Step 2: Choose a random angle from [0, 90, 180, 270]
-    angle = random.choice([0, 90, 180, 270])
+    # Step 2: Choose a random angle from [0, 45, 90, 135, 180, 225, 270, 315]
+    angle = random.choice([0, 45, 90, 135, 180, 225, 270, 315])
 
     rotated_image_2d = rotate_image_manual(image_2d, angle)
 
@@ -59,13 +59,13 @@ rotated_valid_set_images = []
 for image in valid_set[0]:
 
     # Flattened MNIST image array
-    image_flattened = image  # Replace "..." with the full array
+    image_flattened = image 
 
     # Step 1: Reshape to 28x28
     image_2d = image_flattened.reshape(28, 28)
 
-    # Step 2: Choose a random angle from [0, 90, 180, 270]
-    angle = random.choice([0, 90, 180, 270])
+    # Step 2: Choose a random angle from [0, 45, 90, 135, 180, 225, 270, 315]
+    angle = random.choice([0, 45, 90, 135, 180, 225, 270, 315])
 
     rotated_image_2d = rotate_image_manual(image_2d, angle)
 
@@ -80,13 +80,13 @@ rotated_test_set_images = []
 for image in test_set[0]:
 
     # Flattened MNIST image array
-    image_flattened = image  # Replace "..." with the full array
+    image_flattened = image
 
     # Step 1: Reshape to 28x28
     image_2d = image_flattened.reshape(28, 28)
 
-    # Step 2: Choose a random angle from [0, 90, 180, 270]
-    angle = random.choice([0, 90, 180, 270])
+    # Step 2: Choose a random angle from [0, 45, 90, 135, 180, 225, 270, 315]
+    angle = random.choice([0, 45, 90, 135, 180, 225, 270, 315])
 
     rotated_image_2d = rotate_image_manual(image_2d, angle)
 
@@ -102,4 +102,4 @@ rotated_test_set = (np.array(rotated_test_set_images),test_set[1])
 with gzip.open('data/rotatedmnist.pkl.gz', 'wb', compresslevel=9) as f:
     pickle.dump((rotated_train_set, rotated_valid_set, rotated_test_set), f)
 
-print("rotatedmnist.pkl.gz file saved")
+print("the generated file saved")

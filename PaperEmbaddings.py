@@ -24,28 +24,24 @@ if __name__ == "__main__":
     permuted_task_sequences = generate_permuted_task_sequences(unit_tasks)
     
     # Prepare MNIST and CIFAR-10 data for random task sequences
-    #mnist_random_prepared = prepare_data_for_sequences(mnist_data, random_task_sequences['mnist'])
-    #cifar_random_prepared = prepare_data_for_sequences(cifar_data, random_task_sequences['cifar10'])
-    #rotatedMNIST_random_prepared = prepare_data_for_sequences(mnist_data, random_task_sequences['rotatedMNIST'])
+    mnist_random_prepared = prepare_data_for_sequences(mnist_data, random_task_sequences['mnist'])
+    cifar_random_prepared = prepare_data_for_sequences(cifar_data, random_task_sequences['cifar10'])
+    rotatedMNIST_random_prepared = prepare_data_for_sequences(rotatedMNIST_data, random_task_sequences['mnist'])
 
-    # Prepare MNIST and CIFAR-10 data for permuted task sequences
-    mnist_permuted_prepared = prepare_data_for_sequences(mnist_data, permuted_task_sequences['mnist'])
-    cifar_permuted_prepared = prepare_data_for_sequences(cifar_data, permuted_task_sequences['cifar10'])
-    rotatedMNIST_permuted_prepared = prepare_data_for_sequences(rotatedMNIST_data, permuted_task_sequences['mnist'])
 
     # Generate Task2Vec embeddings for tasks
-    rotatedMNIST_embeddings = generate_task_embeddings(rotatedMNIST_permuted_prepared)
-    mnist_embeddings = generate_task_embeddings(mnist_permuted_prepared)
-    #cifar_embeddings = generate_task_embeddings(cifar_permuted_prepared)
+    rotatedMNIST_embeddings = generate_task_embeddings(rotatedMNIST_random_prepared)
+    mnist_embeddings = generate_task_embeddings(mnist_random_prepared)
+    cifar_embeddings = generate_task_embeddings(cifar_random_prepared)
 
     # Save embeddings
     with open('mnist_embeddings.p', 'wb') as f:
-        pickle.dump((permuted_task_sequences['mnist'],mnist_embeddings), f)
+        pickle.dump((random_task_sequences['mnist'],mnist_embeddings), f)
     
-    #with open('cifar_embeddings.p', 'wb') as f:
-        #pickle.dump(cifar_embeddings, f)
+    with open('cifar_embeddings.p', 'wb') as f:
+        pickle.dump(cifar_embeddings, f)
 
     with open('rotatedMNIST_embeddings.p', 'wb') as f:
-        pickle.dump((permuted_task_sequences['mnist'],rotatedMNIST_embeddings), f)
+        pickle.dump((random_task_sequences['mnist'],rotatedMNIST_embeddings), f)
     
-    print("Embeddings for MNIST and CIFAR-10 unit tasks have been saved.")
+    print("Embeddings for MNIST and rotatedMnist unit tasks have been saved.")

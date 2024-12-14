@@ -103,15 +103,16 @@ dataset_names, datasets_list = load_datasets()
 unit_tasks = generate_unit_tasks(dataset_names, datasets_list )
 
 
-# Generate 120 permuted task sequences from a fixed task set
-permuted_task_sequences = generate_permuted_task_sequences(unit_tasks) 
+# Generate 120 random task sequences from a fixed task set
+random_task_sequences = generate_random_task_sequences(unit_tasks) 
 
 numtasks = 10
 tasks = []
 for i in range(numtasks):
-    tasks.append(permuted_task_sequences['mnist'][i]) 
-
-task_gen = TaskDefinedRotatedMnistGenerator(permuted_task_sequences['mnist'], max_samples=500)
+    tasks.append(random_task_sequences['mnist'][i]) 
+# we take only first 10 tasks we have limitation of ressourses, for the full experiment described
+# in the paper we tried to recreate it's code you have to replace "tasks" by "random_task_sequences['mnist']"
+task_gen = TaskDefinedRotatedMnistGenerator(tasks, max_samples=1000) 
 
 with tf.device('/GPU:0'):
     rand_vcl_result = vcl.run_vcl(hidden_size, no_epochs, task_gen, 
